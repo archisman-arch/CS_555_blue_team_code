@@ -1,29 +1,12 @@
 # Setup
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-2. Install [Algorand sandbox](https://github.com/algorand/sandbox)
-3. Add this project folder as bind volume in sandbox `docker-compose.yml` under key `services.algod`:
-    ```yml
-    volumes:
-      - type: bind
-        source: <path>
-        target: /data
-    ```
-4. Start sandbox:
-    ```txt
-    $ ./sandbox up
-    ```
-5. Install Python virtual environment in project folder:
-    ```txt
-    $ python -m venv venv
-    $ source ./venv/Scripts/activate # Windows
-    $ source ./venv/bin/activate # Linux
-    ```
-6. Use Python interpreter: `./venv/Scripts/python.exe`
-    VSCode: `Python: Select Interpreter`
+#Standalone Python code 
+python circuit.py # this includes trusted party circuit, share calculations and reconstruction circuit. 
 
-# Links
-- [Youtube Pyteal Course](https://youtube.com/playlist?list=PLpAdAjL5F75CNnmGbz9Dm_k-z5I6Sv9_x)
-- [Official Algorand Smart Contract Guidelines](https://developer.algorand.org/docs/get-details/dapps/avm/teal/guidelines/)
-- [PyTeal Documentation](https://pyteal.readthedocs.io/en/latest/index.html)
-- [Algorand DevRel Example Contracts](https://github.com/algorand/smart-contracts)
+#Project pythn folder
+project.py #invokes circuit.py and calculates 1 share if run after generating teal. 
+#Known issue: ALGO payment is no added, conditional check not added due to lack of time 
+#To run
+Take clone of https://github.com/algorand-devrel/pyteal-course
+Add project.py to contracts/counter/ 
+./build.sh contracts.counter.project
