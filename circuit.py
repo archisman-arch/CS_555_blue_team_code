@@ -93,7 +93,7 @@ def shamir_sharing_reconstruction_degree_2 (s1, s2, s3, alpha1, alpha2, alpha3,p
     s = (s1 * l1 + s2 *l2 + s3* l3 ) % p
     return s
 
-def trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p):
+def trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p, id ):
     #Assumption: trusted party magically generates the calculation points , it should be generated randomly. Here user can chage 1st 23 lines of teh function, they should be less than p
     alpha1 = 1;
     alpha2 = 2;
@@ -108,8 +108,25 @@ def trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p):
     s1 = shamir_sharing_degree2 (alpha1, s, p)
     s2 = shamir_sharing_degree2 (alpha2, s, p)
     s3 = shamir_sharing_degree2 (alpha3, s, p)
-    return alpha1, alpha2,alpha3, s1, s2, s3
+    if id == 'P1':
+        return alpha1, s1
+    elif id == 'P2':
+        return alpha2, s2
+    elif id == 'P3':
+        return alpha3, s3
+    else:
+        return none 
+    #return alpha1, alpha2,alpha3, s1, s2, s3
 
+def conditional_exchange(party_id, ALGO, alpha1, alpha2, alpha3, s1, s2, s3):
+    if (ALGO > 3333.33) and (party_id == 'P1'):
+        return alpha1, s1
+    elif (ALGO > 3333.33) and (party_id == 'P2'):
+        return alpha2, s2
+    elif (ALGO > 3333.33) and (party_id == 'P3'):
+        return alpha3, s3 
+
+    
 
 
 
@@ -132,15 +149,21 @@ c3 = 2;
 x3 = 3;
 
 gx3 = g ** x3 % p;
-alpha1,alpha2,alpha3,s1,s2,s3 = trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p)
+#alpha1,alpha2,alpha3,s1,s2,s3 = trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p)
+alpha1,s1 = trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p,'P1')
+alpha2,s2 = trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p,'P2')
+alpha3,s3 = trusted_party_circuit(c1, c2, c3, gx1, gx2, gx3,p,'P3')
+#Assumption returned to parties and adversary/client does not have any visibility over it
 print("Sharing of P1:",s1)
 print("Sharing of P2:",s2)
 print("Sharing of P3:",s3)
 
-#reconstruction
-# alpha1 = 1;
-# alpha2 = 2;
-# alpha3 = 3;
-s = shamir_sharing_reconstruction_degree_2 (s1, s2, s3, alpha1, alpha2, alpha3,p)
+#client code
+#retrieval of shares
+alpha1_c,s1_c=conditional_exchange('P1', 3334 , alpha1, alpha2, alpha3, s1, s2, s3)
+alpha2_c,s2_c=conditional_exchange('P2', 3334 , alpha1, alpha2, alpha3, s1, s2, s3)
+alpha3_c,s3_c=conditional_exchange('P3', 3334 , alpha1, alpha2, alpha3, s1, s2, s3)
+#reconstruction by client
+s = shamir_sharing_reconstruction_degree_2 (s1_c, s2_c, s3_c, alpha1_c, alpha2_c, alpha3_c,p)
 print("Reconstructed secret:",s)
 
